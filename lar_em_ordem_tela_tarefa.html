@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lar em Ordem — Protótipo de tarefa</title>
+<style>
+:root{--green:#24543b;--green2:#36704e;--mint:#e7f1e4;--ink:#203128;--muted:#65736a;--line:#e0e7df;--bg:#f6f8f4;--white:#fff;--amber:#9a5a12}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+button{font:inherit;cursor:pointer}.shell{max-width:1120px;margin:auto;min-height:100vh;display:grid;grid-template-columns:220px 1fr;background:var(--bg)}
+aside{background:#203e30;color:#f5faf5;padding:28px 18px}.brand{font-size:19px;font-weight:800;letter-spacing:-.6px;margin-bottom:34px}.brand span{color:#bfe2a9}.nav-label{font-size:11px;color:#c0d0c4;text-transform:uppercase;letter-spacing:1px;margin:20px 10px 8px}.nav{display:block;width:100%;text-align:left;border:0;background:transparent;color:#e5eee6;padding:12px 13px;border-radius:10px;margin:4px 0;font-size:14px}.nav.active{background:#365d47;font-weight:700}.aside-tip{margin-top:44px;border:1px solid #54715e;border-radius:12px;padding:14px;font-size:12px;color:#e2eee4}
+main{padding:34px clamp(18px,4vw,48px);min-width:0}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:26px}.eyebrow{font-size:12px;font-weight:750;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted)}h1{font-size:clamp(25px,3vw,34px);line-height:1.15;letter-spacing:-1px;margin:7px 0 8px}.subtitle{color:var(--muted);font-size:15px}.profile{width:42px;height:42px;display:grid;place-items:center;background:#dcebd7;color:var(--green);border-radius:50%;font-weight:800;flex-shrink:0}
+.breadcrumb{display:flex;align-items:center;gap:9px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 16px;margin-bottom:22px;font-size:13px}.breadcrumb .sep{color:#9ba79c}.breadcrumb .current{font-weight:800;color:var(--green)}.layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(250px,.85fr);gap:18px;align-items:start}
+.card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:24px;box-shadow:0 3px 12px #203e3008}.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}.pill{font-size:12px;font-weight:750;color:var(--amber);background:#fff0d8;padding:6px 10px;border-radius:999px;white-space:nowrap}.category{display:inline-block;color:var(--green);background:var(--mint);font-size:12px;font-weight:750;padding:5px 9px;border-radius:7px;margin-bottom:12px}.task-title{font-size:clamp(23px,3vw,30px);line-height:1.2;letter-spacing:-.6px;margin:0 0 9px}.desc{font-size:14px;color:var(--muted);margin:0 0 22px}.meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 22px}.meta-item{border:1px solid var(--line);border-radius:10px;padding:12px}.meta-label{font-size:12px;color:var(--muted);margin-bottom:4px}.meta-value{font-size:14px;font-weight:750}.divider{height:1px;background:var(--line);margin:20px 0}.primary{display:block;width:100%;border:0;border-radius:11px;background:var(--green);color:white;font-size:16px;font-weight:800;padding:15px 18px;box-shadow:0 3px 0 #173c28}.primary:hover{background:var(--green2)}.primary:focus-visible,.nav:focus-visible,.back:focus-visible{outline:3px solid #92bd7e;outline-offset:3px}.success{display:none;background:#e8f4e4;border:1px solid #c8e2be;color:#24543b;padding:13px;border-radius:10px;margin-top:14px;font-weight:700;font-size:14px}.success.show{display:block}.flow-title{font-size:17px;font-weight:800;margin:0 0 5px}.flow-sub{font-size:13px;color:var(--muted);margin:0 0 20px}.steps{list-style:none;margin:0;padding:0}.step{display:grid;grid-template-columns:34px 1fr;gap:11px;position:relative;padding-bottom:22px}.step:not(:last-child):before{content:"";position:absolute;left:16px;top:34px;bottom:0;width:2px;background:#dce6d9}.step:last-child{padding-bottom:0}.num{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:#edf1eb;color:#526b58;font-size:13px;font-weight:800;z-index:1}.step.active .num{background:var(--green);color:white;box-shadow:0 0 0 4px var(--mint)}.step.done .num{background:#d8ebd1;color:#24543b}.step-name{font-size:14px;font-weight:800;margin:2px 0 3px}.step-desc{font-size:12px;color:var(--muted);margin:0}.step.active .step-name{color:var(--green)}.note{margin-top:18px;border-radius:10px;background:#f4f6f1;padding:13px;font-size:12px;color:#58685c}
+.back{border:1px solid var(--line);background:white;border-radius:9px;padding:9px 12px;color:var(--green);font-size:13px;font-weight:750}
+@media(max-width:760px){.shell{grid-template-columns:1fr}aside{padding:14px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}.brand{margin:0 auto 0 0;font-size:17px}.nav-label,.aside-tip{display:none}.nav{width:auto;padding:9px 10px;font-size:12px;margin:0}main{padding:23px 15px}.layout{grid-template-columns:1fr}.card{padding:20px}.breadcrumb{font-size:12px}.top{margin-bottom:20px}}
+@media(max-width:380px){.meta{grid-template-columns:1fr}.nav{font-size:11px;padding:8px}.breadcrumb{gap:6px;padding:11px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside>
+  <div class="brand">⌂ Lar <span>em Ordem</span></div>
+  <div class="nav-label">Menu principal</div>
+  <button class="nav">▦ &nbsp; Visão geral</button>
+  <button class="nav active">☷ &nbsp; Tarefas de hoje</button>
+  <button class="nav">▤ &nbsp; Minha semana</button>
+  <button class="nav">♧ &nbsp; Moradores</button>
+  <div class="aside-tip"><strong>Uma casa mais leve.</strong><br>Pequenas tarefas, grandes diferenças.</div>
+</aside>
+<main>
+  <header class="top">
+    <div><div class="eyebrow">Terça-feira · 20 de outubro</div><h1>Detalhes da tarefa</h1><div class="subtitle">Veja o que precisa ser feito e conclua em poucos passos.</div></div>
+    <div class="profile" aria-label="Perfil de Mariana">MC</div>
+  </header>
+  <nav class="breadcrumb" aria-label="Caminho da tarefa">
+    <span>Visão geral</span><span class="sep" aria-hidden="true">›</span>
+    <span>Tarefas de hoje</span><span class="sep" aria-hidden="true">›</span>
+    <span class="current">Varrer e passar pano</span>
+  </nav>
+  <div class="layout">
+    <section class="card" aria-labelledby="task-heading">
+      <div class="card-head"><span class="eyebrow">Tarefa selecionada</span><span class="pill" id="status">Pendente</span></div>
+      <span class="category">Limpeza</span>
+      <h2 class="task-title" id="task-heading">Varrer e passar pano</h2>
+      <p class="desc">Limpar o chão da sala e da cozinha para deixar os ambientes prontos para o restante do dia.</p>
+      <div class="meta">
+        <div class="meta-item"><div class="meta-label">Responsável</div><div class="meta-value">Mariana Costa</div></div>
+        <div class="meta-item"><div class="meta-label">Prazo</div><div class="meta-value">Hoje, até 18h</div></div>
+      </div>
+      <div class="divider"></div>
+      <button class="primary" id="complete" type="button">✓ &nbsp; Marcar como concluída</button>
+      <div class="success" id="success" role="status" aria-live="polite">Tarefa concluída! Seu progresso foi atualizado.</div>
+      <p class="note">Ação principal: quando terminar a tarefa, use o botão verde acima. Você pode desfazer a conclusão pelo mesmo botão.</p>
+    </section>
+    <section class="card" aria-labelledby="flow-heading">
+      <h2 class="flow-title" id="flow-heading">Caminho da tarefa</h2>
+      <p class="flow-sub">Do início até a conclusão, sem etapas escondidas.</p>
+      <ol class="steps">
+        <li class="step done"><span class="num">1</span><div><div class="step-name">Abrir a visão geral</div><p class="step-desc">Veja o resumo das tarefas do dia.</p></div></li>
+        <li class="step done"><span class="num">2</span><div><div class="step-name">Encontrar a tarefa</div><p class="step-desc">Entre em “Tarefas de hoje” e selecione a atividade.</p></div></li>
+        <li class="step active" id="step3"><span class="num">3</span><div><div class="step-name">Conferir os detalhes</div><p class="step-desc">Confira categoria, responsável e prazo nesta tela.</p></div></li>
+        <li class="step" id="step4"><span class="num">4</span><div><div class="step-name">Marcar como concluída</div><p class="step-desc">Use o botão principal para atualizar o status.</p></div></li>
+      </ol>
+    </section>
+  </div>
+</main>
+</div>
+<script>
+const btn=document.getElementById('complete'), statusLabel=document.getElementById('status'), success=document.getElementById('success');
+let done=false;
+btn.addEventListener('click',()=>{
+ done=!done;
+ statusLabel.textContent=done?'Concluída':'Pendente';
+ statusLabel.style.background=done?'#e1f2dc':'#fff0d8';
+ statusLabel.style.color=done?'#24543b':'#9a5a12';
+ btn.textContent=done?'↶  Desfazer conclusão':'✓  Marcar como concluída';
+ success.classList.toggle('show',done);
+ document.getElementById('step3').classList.toggle('active',!done);
+ document.getElementById('step3').classList.toggle('done',done);
+ document.getElementById('step3').querySelector('.num').textContent=done?'✓':'3';
+ document.getElementById('step4').classList.toggle('active',done);
+ document.getElementById('step4').classList.toggle('done',done);
+ document.getElementById('step4').querySelector('.num').textContent=done?'✓':'4';
+});
+</script>
+</body>
+</html>
